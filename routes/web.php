@@ -21,7 +21,10 @@ Route::group(['middleware' => 'auth'],function (){
     Route::get('/email_verification/send', 'EmailVerificationController@send')->name('email_verification.send');
 
     Route::group(['middleware' => 'email_verified'], function() {
-
+        Route::post('products/{product}/favorite','ProductsController@favorite')->name('products.favorite');
+        Route::delete('products/{product}/favorite','ProductsController@disFavorite')->name('products.disFavorite');
+        Route::get('cart','CartController@index')->name('cart.index');
+        Route::post('cart','CartController@add')->name('cart.add');
     });
 });
 
