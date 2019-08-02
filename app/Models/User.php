@@ -29,4 +29,25 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified' => 'boolean'
     ];
+
+    public function addresses(){
+        return $this->hasMany(UserAddress::class);
+    }
+
+    /**
+     * 收藏商品
+     */
+    public function favoriteProducts(){
+        return $this->belongsToMany(Product::class,'user_favorite_products')
+            ->withTimestamps()
+            ->orderBy('user_favorite_products.created_at','desc');
+    }
+
+    /**
+     * 购物车
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function cartItems(){
+        return $this->hasMany(CartItem::class);
+    }
 }
