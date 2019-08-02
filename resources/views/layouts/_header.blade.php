@@ -34,7 +34,7 @@
                                 <a href="">我的收藏</a>
                             </li>
                             <li>
-                                <a href="">收货地址</a>
+                                <a href="{{route('user_addresses.index')}}">收货地址</a>
                             </li>
                             <li>
                                 <a href="">我的订单</a>
