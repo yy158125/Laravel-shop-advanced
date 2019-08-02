@@ -76,10 +76,13 @@ class Order extends Model
     }
     public static function findAvailableNo(){
         $prefix = date('YmdHis');
-        $no = $prefix.str_pad(random_int(0,999),6,'0',STR_PAD_LEFT);
-        if (!static::where('no',$no)->exists()) {
-            return $no;
+        for ($i=0;$i<10;$i++){
+            $no = $prefix.str_pad(random_int(0,999999),6,'0',STR_PAD_LEFT);
+            if (!static::where('no',$no)->exists()) {
+                return $no;
+            }
         }
+
         Log::warning('find order no failed');
         return false;
     }

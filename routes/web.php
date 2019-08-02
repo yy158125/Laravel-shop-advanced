@@ -21,16 +21,25 @@ Route::group(['middleware' => 'auth'],function (){
     Route::get('/email_verification/send', 'EmailVerificationController@send')->name('email_verification.send');
 
     Route::group(['middleware' => 'email_verified'], function() {
+        // 收藏商品
         Route::post('products/{product}/favorite','ProductsController@favorite')->name('products.favorite');
         Route::delete('products/{product}/favorite','ProductsController@disFavorite')->name('products.disFavorite');
-        Route::get('cart','CartController@index')->name('cart.index');
-        Route::post('cart','CartController@add')->name('cart.add');
+        // 收货地址
         Route::get('user_addresses', 'UserAddressesController@index')->name('user_addresses.index');
         Route::get('user_addresses/create','UserAddressesController@create')->name('user_addresses.create');
         Route::post('user_addresses','UserAddressesController@store')->name('user_addresses.store');
         Route::get('user_addresses/{user_address}','UserAddressesController@edit')->name('user_addresses.edit');
         Route::put('user_addresses/{user_address}','UserAddressesController@update')->name('user_addresses.update');
         Route::delete('user_addresses/{user_address}','UserAddressesController@destroy')->name('user_addresses.destroy');
+
+        // 购物车
+        Route::get('cart','CartController@index')->name('cart.index');
+        Route::post('cart', 'CartController@add')->name('cart.add');
+        Route::delete('cart/{sku}','CartController@remove')->name('cart.remove');
+        // 订单
+        Route::post('order','OrderController@store')->name('order.store');
+        Route::get('order','OrderController@index')->name('order.index');
+        Route::get('order/{order}','OrderController@show')->name('order.show');
     });
 });
 
