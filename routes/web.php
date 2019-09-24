@@ -40,8 +40,14 @@ Route::group(['middleware' => 'auth'],function (){
         Route::post('order','OrderController@store')->name('order.store');
         Route::get('order','OrderController@index')->name('order.index');
         Route::get('order/{order}','OrderController@show')->name('order.show');
+        // 支付
+        Route::get('payment/{order}/alipay', 'PaymentController@payByAlipay')->name('payment.alipay');
+        Route::get('payment/alipay/return', 'PaymentController@alipayReturn')->name('payment.alipay.return');
     });
 });
 
 Route::get('products','ProductsController@index')->name('products.index');
 Route::get('products/{product}','ProductsController@show')->name('products.show')->where('product', '[0-9]+');
+
+Route::post('payment/alipay/notify', 'PaymentController@alipayNotify')->name('payment.alipay.notify');
+
