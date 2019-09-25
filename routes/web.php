@@ -43,6 +43,9 @@ Route::group(['middleware' => 'auth'],function (){
         // 支付
         Route::get('payment/{order}/alipay', 'PaymentController@payByAlipay')->name('payment.alipay');
         Route::get('payment/alipay/return', 'PaymentController@alipayReturn')->name('payment.alipay.return');
+
+        // 确认收货
+        Route::post('order/{order}/received','OrderController@received')->name('order.received');
     });
 });
 
