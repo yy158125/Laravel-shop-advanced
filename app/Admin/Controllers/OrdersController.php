@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Exceptions\InvalidRequestException;
 use App\Models\Order;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\HasResourceActions;
@@ -9,6 +10,7 @@ use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
+use Illuminate\Http\Request;
 
 class OrdersController extends Controller
 {
@@ -34,12 +36,12 @@ class OrdersController extends Controller
      * @param Content $content
      * @return Content
      */
-    public function show($id, Content $content)
+    public function show(Order $order, Content $content)
     {
         return $content
-            ->header('Detail')
+            ->header('查看订单')
             ->description('description')
-            ->body($this->detail($id));
+            ->body(view('admin.orders.show', ['order' => $order]));
     }
 
     /**
@@ -112,37 +114,8 @@ class OrdersController extends Controller
         return $grid;
     }
 
-    /**
-     * Make a show builder.
-     *
-     * @param mixed $id
-     * @return Show
-     */
-    protected function detail($id)
-    {
-        $show = new Show(Order::findOrFail($id));
 
-        $show->id('Id');
-        $show->no('No');
-        $show->user_id('User id');
-        $show->address('Address');
-        $show->remark('Remark');
-        $show->total_amount('Total amount');
-        $show->paid_at('Paid at');
-        $show->payment_method('Payment method');
-        $show->payment_no('Payment no');
-        $show->refund_status('Refund status');
-        $show->refund_no('Refund no');
-        $show->closed('Closed');
-        $show->reviewed('Reviewed');
-        $show->ship_status('Ship status');
-        $show->ship_data('Ship data');
-        $show->extra('Extra');
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
 
-        return $show;
-    }
 
     /**
      * Make a form builder.
@@ -171,4 +144,41 @@ class OrdersController extends Controller
 
         return $form;
     }
+
+    public function ship(Order $order,Request $request)
+    {
+        if (!$order->paid_at){
+            throw new InvalidRequestException('该订单未付款');
+        }
+        // 判断当前订单发货状态是否为未发货
+        if ($order->ship_status !== Order::SHIP_STATUS_PENDING){
+            throw new InvalidRequestException('该订单已发货');
+        }
+        // Laravel 5.5 之后 validate 方法可以返回校验过的值
+        $data = $this->validate($request,[
+            'express_company' => ['required'],
+            'express_no'      => ['required'],
+        ],[],[
+            'express_company' => '物流公司',
+            'express_no'      => '物流单号',
+        ]);
+        $order->update([
+            'ship_status' => Order::SHIP_STATUS_DELIVERED,
+            'ship_data'   => $data
+        ]);
+        return redirect()->back();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
