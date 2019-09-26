@@ -108,7 +108,7 @@ class OrderController extends Controller
         $extra['refund_reason'] = $request->reason;
         $order->update([
             'extra' => $extra,
-            'refund_status' => Order::REFUND_STATUS_PROCESSING
+            'refund_status' => Order::REFUND_STATUS_APPLIED
         ]);
         return $order;
     }

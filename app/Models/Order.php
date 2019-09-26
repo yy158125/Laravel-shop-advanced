@@ -74,6 +74,10 @@ class Order extends Model
     public function items(){
         return $this->hasMany(OrderItem::class);
     }
+    public function couponCode()
+    {
+        return $this->belongsTo(CouponCode::class);
+    }
     public static function findAvailableNo(){
         $prefix = date('YmdHis');
         for ($i=0;$i<10;$i++){
