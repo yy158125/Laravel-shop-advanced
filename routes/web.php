@@ -46,6 +46,9 @@ Route::group(['middleware' => 'auth'],function (){
 
         // 确认收货
         Route::post('order/{order}/received','OrderController@received')->name('order.received');
+        Route::get('order/{order}/review', 'OrderController@review')->name('order.review.show');
+        // 评价
+        Route::post('order/{order}/review','OrderController@sendReview')->name('order.review.store');
     });
 });
 

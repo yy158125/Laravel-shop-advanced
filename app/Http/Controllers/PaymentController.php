@@ -36,6 +36,10 @@ class PaymentController extends Controller
     public function alipayNotify()
     {
         $data = app('alipay')->verify();
+        // 如果订单状态不是成功或者结束，则不走后续的逻辑
+        if (!in_array($data->trade_status,['TRADE_SUCCESS','TRADE_FINISHED'])){
+            return app('alipay')->success();
+        }
         // \Log::debug('Alipay notify', $data->all());
         // $data->out_trade_no 拿到订单流水号，并在数据库中查询
         $order = Order::where('no', $data->out_trade_no)->first();
