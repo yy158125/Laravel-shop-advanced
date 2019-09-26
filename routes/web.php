@@ -49,6 +49,9 @@ Route::group(['middleware' => 'auth'],function (){
         Route::get('order/{order}/review', 'OrderController@review')->name('order.review.show');
         // 评价
         Route::post('order/{order}/review','OrderController@sendReview')->name('order.review.store');
+        //
+        Route::post('order/{order}/apply_refund','OrderController@applyRefund')->name('order.apply_refund');
+
     });
 });
 
