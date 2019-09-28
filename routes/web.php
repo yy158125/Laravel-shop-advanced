@@ -51,6 +51,8 @@ Route::group(['middleware' => 'auth'],function (){
         Route::post('order/{order}/review','OrderController@sendReview')->name('order.review.store');
         //
         Route::post('order/{order}/apply_refund','OrderController@applyRefund')->name('order.apply_refund');
+        Route::get('coupon_code/{code}','CouponCodesController@show')->name('coupon_codes.show');
+
 
     });
 });
