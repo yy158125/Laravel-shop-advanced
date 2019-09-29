@@ -19,7 +19,6 @@ $factory->define(App\Models\CouponCode::class, function (Faker $faker) {
         }
     }
 
-
     return [
         'name' => join(' ',$faker->words), // 随机生成名称
         'code' => CouponCode::findAvailableCode(),
