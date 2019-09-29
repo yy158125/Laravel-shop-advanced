@@ -3,6 +3,7 @@
 /public/storage
 /storage/*.key
 /vendor
+/1.txt
 /.idea
 /.vagrant
 Homestead.json
