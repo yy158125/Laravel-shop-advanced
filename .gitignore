@@ -6,6 +6,7 @@
 /1.txt
 /.idea
 /.vagrant
+/config/pay.php
 Homestead.json
 Homestead.yaml
 npm-debug.log

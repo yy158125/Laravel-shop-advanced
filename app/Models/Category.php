@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Category extends Model
 {
@@ -42,6 +43,22 @@ class Category extends Model
     public function getPathIdsAttribute(){
         $path = trim($this->path,'-');
         return array_filter(explode('-',$path));
+    }
+    // 获取所有祖先类目并按层级排序
+    public function getAncestorsAttribute()
+    {
+        return Category::query()
+            ->whereIn('id',$this->path_ids)
+            ->orderBy('level')
+            ->get();
+    }
+    // 获取以 - 为分隔的所有祖先类目名称以及当前类目的名称
+    public function getFullNameAttribute()
+    {
+        return $this->ancestors
+            ->pluck('name')
+            ->push($this->name)
+            ->implode(' - ');
     }
 
 }

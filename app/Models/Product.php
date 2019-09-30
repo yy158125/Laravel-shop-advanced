@@ -29,6 +29,11 @@ class Product extends Model
     public function skus(){
         return $this->hasMany(ProductSku::class);
     }
+    // 与分类关联
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
     // 与属性关联
     public function properties(){
         return $this->hasMany(ProductProperty::class);
