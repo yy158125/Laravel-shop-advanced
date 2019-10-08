@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\HasResourceActions;
@@ -143,6 +144,13 @@ class ProductController extends Controller
     {
         return Admin::form(Product::class,function (Form $form){
             $form->text('title', '商品名称')->rules('required');
+            // 添加一个类目字段，与之前类目管理类似，使用 Ajax 的方式来搜索添加
+            $form->select('category_id', '类目')->options(function ($id) {
+                $category = Category::find($id);
+                if ($category) {
+                    return [$category->id => $category->full_name];
+                }
+            })->ajax('/admin/api/categories?is_directory=0');
             // 创建一个选择图片的框  使用随机生成文件名 (md5(uniqid()).extension)
             $form->image('image','封面图片')->rules('required|image')->uniqueName();
              $form->editor('description', '商品描述')->rules('required');
@@ -153,6 +161,7 @@ class ProductController extends Controller
                 $form->text('price','单价')->rules('required|numeric|min:0.01');
                 $form->text('stock','剩余库存')->rules('required|integer|min:0');
             });
+
 //            $form->hasMany('properties','商品属性',function (Form\NestedForm $form){
 //                $form->text('name','属性名')->rules('required');
 //                $form->text('value','属性值')->rules('required');

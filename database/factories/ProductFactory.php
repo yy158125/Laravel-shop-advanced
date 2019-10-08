@@ -1,6 +1,7 @@
 <?php
 
 use Faker\Generator as Faker;
+use App\Models\Category;
 
 $factory->define(\App\Models\Product::class, function (Faker $faker) {
     $image = $faker->randomElement([
@@ -16,6 +17,8 @@ $factory->define(\App\Models\Product::class, function (Faker $faker) {
         "https://cdn.learnku.com/uploads/images/201806/01/5320/pa7DrV43Mw.jpg",
     ]);
 
+    $category = Category::where('is_directory',false)->inRandomOrder()->first();
+
     return [
         'title' => $faker->word,
         'description' => $faker->sentence,
@@ -25,5 +28,6 @@ $factory->define(\App\Models\Product::class, function (Faker $faker) {
         'sold_count'   => 0,
         'review_count' => 0,
         'price'        => 0,
+        'category_id'  => $category ? $category->id : null,
     ];
 });
