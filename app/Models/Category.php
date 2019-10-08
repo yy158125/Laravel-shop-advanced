@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class Category extends Model
 {
-    protected $fillable = ['name','is_directory','level','path'];
+    protected $fillable = ['name','is_directory','level','path','parent_id'];
 
     protected $casts = [
         'is_directory' => 'boolean'

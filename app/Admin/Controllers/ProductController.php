@@ -84,9 +84,10 @@ class ProductController extends Controller
     protected function grid()
     {
         $grid = new Grid(new Product);
-
+        $grid->model()->with(['category']);
         $grid->id('Id')->sortable();
         $grid->title('商品名称');
+        $grid->column('category.name', '类目');
         $grid->on_sale('已上架')->display(function ($value){
             return $value ? '是' : '否';
         });
