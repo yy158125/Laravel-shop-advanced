@@ -6,6 +6,7 @@ use App\Exceptions\InvalidRequestException;
 use App\Models\Category;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Services\CategoryService;
 use function foo\func;
 use Illuminate\Http\Request;
 
@@ -61,7 +62,6 @@ class ProductsController extends Controller
 
     public function show(Request $request,Product $product){
 
-
         if(!$product->on_sale){
             throw new InvalidRequestException('商品未上架');
         }
@@ -72,10 +72,12 @@ class ProductsController extends Controller
         // 评价
         $reviews = OrderItem::query()
             ->with(['order.user','productSku'])
+            ->where('product_id',$product->id)
             ->whereNotNull('reviewed_at')
             ->orderBy('reviewed_at','desc')
             ->limit(10)
             ->get();
+
         return view('products.show',[
             'product' => $product,
             'favored' => $favored,
