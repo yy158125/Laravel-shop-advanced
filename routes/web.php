@@ -52,7 +52,8 @@ Route::group(['middleware' => 'auth'],function (){
         //
         Route::post('order/{order}/apply_refund','OrderController@applyRefund')->name('order.apply_refund');
         Route::get('coupon_code/{code}','CouponCodesController@show')->name('coupon_codes.show');
-
+        // 众筹
+        Route::post('crowdfunding_orders', 'OrdersController@crowdfunding')->name('crowdfunding_orders.store');
 
     });
 });
