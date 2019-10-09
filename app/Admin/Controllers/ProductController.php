@@ -85,7 +85,8 @@ class ProductController extends Controller
     protected function grid()
     {
         $grid = new Grid(new Product);
-        $grid->model()->with(['category']);
+
+        $grid->model()->where('type',Product::TYPE_NORMAL)->with(['category']);
         $grid->id('Id')->sortable();
         $grid->title('商品名称');
         $grid->column('category.name', '类目');
@@ -143,6 +144,7 @@ class ProductController extends Controller
     protected function form()
     {
         return Admin::form(Product::class,function (Form $form){
+            $form->hidden('type')->value(Product::TYPE_NORMAL);
             $form->text('title', '商品名称')->rules('required');
             // 添加一个类目字段，与之前类目管理类似，使用 Ajax 的方式来搜索添加
             $form->select('category_id', '类目')->options(function ($id) {
