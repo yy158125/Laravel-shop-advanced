@@ -12,23 +12,16 @@ use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
 
-class ProductController extends Controller
+class ProductController extends CommonProductsController
 {
     use HasResourceActions;
-//    use ModelForm;
 
-    /**
-     * Index interface.
-     *
-     * @param Content $content
-     * @return Content
-     */
-    public function index(Content $content)
+    public function getProductType()
     {
-        return $content
-            ->header('商品列表')
-            ->body($this->grid());
+        // TODO: Implement getProductType() method.
+        return Product::TYPE_NORMAL;
     }
+
 
     /**
      * Show interface.
@@ -45,32 +38,6 @@ class ProductController extends Controller
             ->body($this->detail($id));
     }
 
-    /**
-     * Edit interface.
-     *
-     * @param mixed   $id
-     * @param Content $content
-     * @return Content
-     */
-    public function edit($id, Content $content)
-    {
-        return $content
-            ->header('商品编辑')
-            ->body($this->form()->edit($id));
-    }
-
-    /**
-     * Create interface.
-     *
-     * @param Content $content
-     * @return Content
-     */
-    public function create(Content $content)
-    {
-        return $content
-            ->header('创建商品')
-            ->body($this->form());
-    }
 
     public function update($id)
     {
@@ -82,33 +49,26 @@ class ProductController extends Controller
      *
      * @return Grid
      */
-    protected function grid()
-    {
-        $grid = new Grid(new Product);
 
-        $grid->model()->where('type',Product::TYPE_NORMAL)->with(['category']);
-        $grid->id('Id')->sortable();
+    protected function customGrid(Grid $grid)
+    {
+        // TODO: Implement customGrid() method.
+        $grid->model()->with(['category']);
+        $grid->id('ID')->sortable();
         $grid->title('商品名称');
         $grid->column('category.name', '类目');
-        $grid->on_sale('已上架')->display(function ($value){
+        $grid->on_sale('已上架')->display(function ($value) {
             return $value ? '是' : '否';
         });
         $grid->rating('评分');
         $grid->sold_count('销量');
         $grid->review_count('评论数');
         $grid->price('价格');
-        $grid->actions(function ($actions){
-            // 不在每一行后面展示查看按钮
-            $actions->disableView();
-            // 不在每一行后面展示删除按钮
-            $actions->disableDelete();
-        });
-        $grid->tools(function ($tools){
-            $tools->batch(function ($batch){
-                $batch->disableDelete();
-            });
-        });
-        return $grid;
+    }
+
+    protected function customForm(Form $form)
+    {
+        // TODO: Implement customForm() method.
     }
 
     /**
