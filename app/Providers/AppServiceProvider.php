@@ -34,7 +34,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('alipay',function (){
             // 判断当前项目运行环境是否为线上环境
             $config = config('pay.alipay');
-            $config['notify_url'] = route('payment.alipay.notify');
+            // $config['notify_url'] = route('payment.alipay.notify');
+            $config['notify_url'] = ngrok_url('payment.alipay.notify');
             $config['return_url'] = route('payment.alipay.return');
             if (app()->environment() !== 'production'){
                 $config['mode'] = 'dev';
@@ -58,7 +59,7 @@ class AppServiceProvider extends ServiceProvider
 
         if(app()->environment('local')){
             DB::listen(function ($query){
-                Log::info(Str::replaceArray('?',$query->bindings,$query->sql));
+                // Log::info(Str::replaceArray('?',$query->bindings,$query->sql));
 //                Log::info($query->sql);
             });
         }

@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\HandleRefundRequest;
 use App\Models\CrowdfundingProduct;
 use App\Models\Order;
 use App\Http\Controllers\Controller;
+use App\Services\OrderService;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -174,14 +175,14 @@ class OrdersController extends Controller
         return redirect()->back();
     }
 
-    public function handleRefund(Order $order,HandleRefundRequest $request)
+    public function handleRefund(Order $order,HandleRefundRequest $request,OrderService $orderService)
     {
         if ($order->refund_status !== Order::REFUND_STATUS_APPLIED){
             throw new InvalidRequestException('订单状态不正确');
         }
         if ($request->agree){
-            // 同意退款的逻辑这里先留空
-            // TODO
+            // 同意退款
+            $orderService->refundOrder($order);
         }else{
             $extra = $order ?: [];
             $extra['refund_disagree_reason'] = $request->reason;

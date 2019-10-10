@@ -7,6 +7,7 @@ use App\Models\Order;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\DB;
+use Yansongda\Supports\Log;
 
 class UpdateCrowdfundingProductProgress
 {
@@ -34,8 +35,9 @@ class UpdateCrowdfundingProductProgress
                 // 取出订单总金额
                 DB::raw('sum(total_amount) as total_amount'),
                 // 取出去重的支持用户数
-                DB::raw('count(distinct(user_id) as user_count')
+                DB::raw('count(distinct(user_id)) as user_count'),
             ]);
+        Log::info($data);
         $crowdfunding->update([
             'total_amount' => $data->total_amount,
             'user_count' => $data->user_count

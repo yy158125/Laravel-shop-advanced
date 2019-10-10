@@ -23,10 +23,9 @@ class PaymentController extends Controller
             'subject' => '支付Shop订单'.$order->no,
         ]);
     }
+    // 前端回调页面   校验提交的参数是否合法
     public function alipayReturn()
     {
-        // 前端回调页面
-        // 校验提交的参数是否合法
         try {
             app('alipay')->verify();
         } catch (\Exception $e) {
@@ -35,6 +34,7 @@ class PaymentController extends Controller
 
         return view('pages.success', ['msg' => '付款成功']);
     }
+    // 服务器端回调
     public function alipayNotify()
     {
         $data = app('alipay')->verify();
@@ -43,21 +43,24 @@ class PaymentController extends Controller
             return app('alipay')->success();
         }
         // \Log::debug('Alipay notify', $data->all());
-        // $data->out_trade_no 拿到订单流水号，并在数据库中查询
+
         $order = Order::where('no', $data->out_trade_no)->first();
         if (!$order) {
             return 'fail';
         }
         // 如果这笔订单的状态已经是已支付
         if ($order->paid_at) {
-            // 返回数据给支付宝
             return app('alipay')->success();
         }
-        $order->update([
+        $orderData = [
             'paid_at' => Carbon::now(),
             'payment_method' => 'alipay',
             'payment_no' => $data->trade_no, // 支付宝订单号
-        ]);
+        ];
+        if ($order->closed){
+            $orderData['closed'] = false;
+        }
+        $order->update($orderData);
         $this->afterPaid($order);
         return app('alipay')->success();
     }

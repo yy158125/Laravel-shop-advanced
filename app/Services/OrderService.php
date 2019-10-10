@@ -102,6 +102,7 @@ class OrderService
             ]);
             $item->product()->associate($sku->product_id);
             $item->productSku()->associate($sku);
+            $item->save();
             if ($sku->decreaseStock($amount) <= 0){
                 throw new InvalidRequestException('该商品库存不足');
             }
@@ -115,6 +116,55 @@ class OrderService
         return $order;
     }
 
+    public function refundOrder(Order $order)
+    {
+        switch ($order->payment_method){
+            case 'wechat':
+                $refundNo = Order::getAvailableRefundNo();
+                app('wechat_pay')->refund([
+                    'out_trade_no' => $order->no,
+                    'total_fee' => $order->total_amount * 100,
+                    'refund_fee' => $order->total_amount * 100,
+                    'out_refund_no' => $refundNo,
+                    'notify_url' => ngrok_url('payment.wechat.refund_notify'),
+                ]);
+                $order->update([
+                    'refund_no' => $refundNo,
+                    'refund_status' => Order::REFUND_STATUS_PROCESSING
+                ]);
+                break;
+            case 'alipay':
+                $refundNo = Order::getAvailableRefundNo();
+                // 调用支付宝支付实例的 refund 方法
+                $ret = app('alipay')->refund([
+                    'out_trade_no' => $order->no, // 之前的订单流水号
+                    'refund_amount' => $order->total_amount, // 退款金额，单位元
+                    'out_request_no' => $refundNo, // 退款订单号
+                ]);
+
+                if ($ret->sub_code){
+                    $extra = $order->extra;
+                    $extra['refund_failed_code'] = $ret->sub_code;
+                    // 将订单的退款状态标记为退款失败
+                    $order->update([
+                        'refund_no' => $refundNo,
+                        'refund_status' => Order::REFUND_STATUS_FAILED,
+                        'extra' => $extra,
+                    ]);
+                } else{
+                    // 将订单的退款状态标记为退款成功并保存退款订单号
+                    $order->update([
+                        'refund_no' => $refundNo,
+                        'refund_status' => Order::REFUND_STATUS_SUCCESS,
+                    ]);
+                }
+                break;
+
+            default:
+                throw new InternalException('未知订单支付方式：'.$order->payment_method);
+                break;
+        }
+    }
 
 
 
