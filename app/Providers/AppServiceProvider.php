@@ -4,7 +4,10 @@ namespace App\Providers;
 
 use App\Http\ViewComposers\CategoryTreeComposer;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Monolog\Logger;
 use Yansongda\Pay\Pay;
 
@@ -52,5 +55,12 @@ class AppServiceProvider extends ServiceProvider
             // 调用 Yansongda\Pay 来创建一个微信支付对象
             return Pay::wechat($config);
         });
+
+        if(app()->environment('local')){
+            DB::listen(function ($query){
+                Log::info(Str::replaceArray('?',$query->bindings,$query->sql));
+//                Log::info($query->sql);
+            });
+        }
     }
 }

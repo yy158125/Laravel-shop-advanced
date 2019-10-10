@@ -34,6 +34,7 @@ class OrderService
                 ],
                 'remark' => $remark,
                 'total_amount' => 0,
+                'type' => Order::TYPE_NORMAL
             ]);
             $order->user()->associate($user);
             $order->save();
@@ -76,6 +77,7 @@ class OrderService
         dispatch(new CloseOrder($order,config('app.order_ttl')));
         return $order;
     }
+
     // 众筹商品下单逻辑
     public function crowdfunding(User $user, UserAddress $address, ProductSku $sku, $amount)
     {
@@ -90,6 +92,7 @@ class OrderService
                 ],
                 'remark'       => '',
                 'total_amount' => $sku->price * $amount,
+                'type' => Order::TYPE_CROWDFUNDING
             ]);
             $order->user()->associate($user);
             $order->save();
