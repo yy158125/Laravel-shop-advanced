@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\UserAddress;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Yansongda\Supports\Log;
 
 class OrderService
 {
@@ -135,6 +136,7 @@ class OrderService
                 break;
             case 'alipay':
                 $refundNo = Order::getAvailableRefundNo();
+                Log::info($refundNo);
                 // 调用支付宝支付实例的 refund 方法
                 $ret = app('alipay')->refund([
                     'out_trade_no' => $order->no, // 之前的订单流水号
