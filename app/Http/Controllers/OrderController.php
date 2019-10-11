@@ -9,6 +9,7 @@ use App\Exceptions\InvalidRequestException;
 use App\Http\Requests\ApplyRefundRequest;
 use App\Http\Requests\CrowdFundingOrderRequest;
 use App\Http\Requests\OrderRequest;
+use App\Http\Requests\SeckillOrderRequest;
 use App\Models\CouponCode;
 use App\Models\Order;
 use App\Models\ProductSku;
@@ -88,6 +89,7 @@ class OrderController extends Controller
         if ($order->reviewed){
             throw new InvalidRequestException('该订单已评价，不可重复提交');
         }
+
         $reviews = $request->reviews;
         DB::transaction(function () use ($order,$reviews){
             // 遍历用户提交的数据
@@ -128,7 +130,7 @@ class OrderController extends Controller
         ]);
         return $order;
     }
-
+    // 众筹下单
     public function crowdfunding(CrowdFundingOrderRequest $request,OrderService $orderService)
     {
         $user = $request->user();
@@ -136,6 +138,14 @@ class OrderController extends Controller
         $address = UserAddress::find($request->input('address_id'));
         $amount  = $request->input('amount');
         return $orderService->crowdfunding($user,$address,$sku,$amount);
+    }
+    // 秒杀下单
+    public function seckill(SeckillOrderRequest $request,OrderService $orderService)
+    {
+        $address = UserAddress::find($request->address_id);
+        $sku = ProductSku::find($request->sku_id);
+
+        return $orderService->seckill($request->user(),$address,$sku);
     }
 
 }

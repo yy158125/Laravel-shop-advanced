@@ -54,7 +54,7 @@ Route::group(['middleware' => 'auth'],function (){
         Route::get('coupon_code/{code}','CouponCodesController@show')->name('coupon_codes.show');
         // 众筹
         Route::post('crowdfunding_orders', 'OrderController@crowdfunding')->name('crowdfunding_orders.store');
-
+        Route::post('seckill_orders', 'OrderController@seckill')->name('seckill_orders.store');
     });
 });
 
