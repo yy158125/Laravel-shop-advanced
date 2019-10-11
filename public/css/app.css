@@ -8334,7 +8334,7 @@ button.close {
 }
 
 body {
-  font-family: Hiragino Sans GB, "Hiragino Sans GB", Helvetica, "Microsoft YaHei", Arial,sans-serif;
+  font-family: Hiragino Sans GB, "Hiragino Sans GB", Helvetica, "Microsoft YaHei", Arial, sans-serif;
 }
 
 /* 顶部导航 */
@@ -8537,6 +8537,34 @@ body {
 .products-index-page .products-list .product-item .product-content .bottom > div:first-child,
 .products-favorites-page .products-list .product-item .product-content .bottom > div:first-child {
   border-right: 1px solid #eee;
+}
+
+.products-show-page .properties-list {
+  border-bottom: 1px solid #e6e6e6;
+  margin-bottom: 20px;
+}
+
+.products-show-page .properties-list .properties-list-title {
+  padding: 5px 0;
+  color: #999;
+  font-weight: 700;
+}
+
+.products-show-page .properties-list .properties-list-body {
+  font-size: 12px;
+  padding: 5px 0;
+  list-style: none;
+  text-indent: 0;
+}
+
+.products-show-page .properties-list .properties-list-body li {
+  display: inline-block;
+  width: 30%;
+  overflow: hidden;
+}
+
+.products-show-page .product-description img {
+  max-width: 100%;
 }
 
 .products-show-page .crowdfunding-info {
@@ -8921,7 +8949,7 @@ body {
 
 .orders-show-page .order-summary {
   width: 50%;
-  font-family: Verdana,Tahoma,Helvetica,Arial;
+  font-family: Verdana, Tahoma, Helvetica, Arial;
 }
 
 .orders-show-page .order-summary .total-amount {

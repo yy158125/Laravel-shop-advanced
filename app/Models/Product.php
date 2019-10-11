@@ -56,4 +56,12 @@ class Product extends Model
     {
         return $this->hasOne(SeckillProduct::class);
     }
+    public function getGroupedPropertiesAttribute()
+    {
+        return $this->properties
+            ->groupBy('name')
+            ->map(function ($properties){
+                return $properties->pluck('value')->all();
+            });
+    }
 }
