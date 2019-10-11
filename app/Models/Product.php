@@ -18,7 +18,7 @@ class Product extends Model
         self::TYPE_SECKILL => '秒杀商品',
     ];
     protected $fillable = [
-        'title', 'description', 'image', 'on_sale','type', 'rating', 'sold_count', 'review_count', 'price'
+        'title', 'description', 'image', 'on_sale','type', 'rating', 'sold_count', 'review_count', 'price','long_title'
     ];
 
     protected $casts = [
