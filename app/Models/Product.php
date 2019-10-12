@@ -64,4 +64,32 @@ class Product extends Model
                 return $properties->pluck('value')->all();
             });
     }
+    public function toESArray()
+    {
+        $arr = array_only($this->toArray(),[
+            'id',
+            'title',
+            'type',
+            'category_id',
+            'long_title',
+            'on_sale',
+            'rating',
+            'sold_count',
+            'review_count',
+            'price',
+        ]);
+        $arr['category'] = $this->category ? explode(' - ', $this->category->full_name) : '';
+        // 类目的 path 字段
+        $arr['category_path'] = $this->category ? $this->category->path : '';
+        // strip_tags 函数可以将 html 标签去除
+        $arr['description'] = strip_tags($this->description);
+        $arr['skus'] = $this->skus->map(function (ProductSku $sku){
+            return array_only($sku->toArray(),['title', 'description', 'price']);
+        });
+        // 只取出需要的商品属性字段
+        $arr['properties'] = $this->properties->map(function (ProductProperty $property) {
+            return array_only($property->toArray(), ['name', 'value']);
+        });
+        return $arr;
+    }
 }
