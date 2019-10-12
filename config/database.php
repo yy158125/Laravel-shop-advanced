@@ -114,7 +114,15 @@ return [
             'port' => env('REDIS_PORT', 6379),
             'database' => 0,
         ],
+        'options' => [
+            'prefix' => 'laravel-shop:'
+        ]
 
     ],
+
+    'elasticsearch' => [
+        // Elasticsearch 支持多台服务器负载均衡，因此这里是一个数组
+        'hosts' => explode(',', env('ES_HOSTS')),
+    ]
 
 ];

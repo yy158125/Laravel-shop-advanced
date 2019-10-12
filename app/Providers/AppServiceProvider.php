@@ -10,6 +10,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Monolog\Logger;
 use Yansongda\Pay\Pay;
+use Elasticsearch\ClientBuilder as ESClientBuilder;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,6 +32,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        if(app()->environment('local')){
+            DB::listen(function ($query){
+                // Log::info(Str::replaceArray('?',$query->bindings,$query->sql));
+//                Log::info($query->sql);
+            });
+        }
+
+
         $this->app->singleton('alipay',function (){
             // 判断当前项目运行环境是否为线上环境
             $config = config('pay.alipay');
@@ -57,11 +66,14 @@ class AppServiceProvider extends ServiceProvider
             return Pay::wechat($config);
         });
 
-        if(app()->environment('local')){
-            DB::listen(function ($query){
-                // Log::info(Str::replaceArray('?',$query->bindings,$query->sql));
-//                Log::info($query->sql);
-            });
-        }
+        $this->app->singleton('es',function (){
+            $builder = ESClientBuilder::create()->setHosts(config('database.elasticsearch.hosts'));
+            if (app()->environment() === 'local'){
+                // 配置日志，Elasticsearch 的请求和返回数据将打印到日志文件中，方便我们调试
+                $builder->setLogger(app('log')->getMonolog());
+            }
+            return $builder->build();
+        });
+
     }
 }
