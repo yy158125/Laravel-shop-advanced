@@ -100,8 +100,8 @@ abstract class CommonProductsController extends Controller
             $product = $form->model();
             $this->dispatch(new SyncOneProductToES($product));
         });
-
-
+         // $params = ['index' => 'products', 'type'  => '_doc', 'body'  => ['query' => ['bool' => ['filter' => [['term' => ['on_sale' => true]],],],],'sort' => [['price' => 'desc']],],];
+        $params = ['index' => 'products', 'type'  => '_doc', 'body'  => ['query' => ['bool' => ['filter' => [['term' => ['on_sale' => true]],], 'must' => [['multi_match' => ['query'  => 'iPhone', 'fields' => ['title^3', 'long_title^2', 'description', 'skus.title', 'skus.description', 'properties.value',],],],],],],],];
         return $form;
 
     }
