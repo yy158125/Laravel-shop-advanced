@@ -142,10 +142,9 @@ class OrderController extends Controller
     // 秒杀下单
     public function seckill(SeckillOrderRequest $request,OrderService $orderService)
     {
-        $address = UserAddress::find($request->address_id);
         $sku = ProductSku::find($request->sku_id);
 
-        return $orderService->seckill($request->user(),$address,$sku);
+        return $orderService->seckill($request->user(),$request->input('address'),$sku);
     }
 
 }
