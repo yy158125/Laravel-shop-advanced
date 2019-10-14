@@ -97,11 +97,10 @@ abstract class CommonProductsController extends Controller
         });
         // 同步商品数据到es
         $form->saved(function (Form $form){
-            $product = $form->model();
-            $this->dispatch(new SyncOneProductToES($product));
+//            $product = $form->model();
+//            $this->dispatch(new SyncOneProductToES($product));
         });
-         // $params = ['index' => 'products', 'type'  => '_doc', 'body'  => ['query' => ['bool' => ['filter' => [['term' => ['on_sale' => true]],],],],'sort' => [['price' => 'desc']],],];
-        $params = ['index' => 'products', 'type'  => '_doc', 'body'  => ['query' => ['bool' => ['filter' => [['term' => ['on_sale' => true]],], 'must' => [['multi_match' => ['query'  => 'iPhone', 'fields' => ['title^3', 'long_title^2', 'description', 'skus.title', 'skus.description', 'properties.value',],],],],],],],];
+
         return $form;
 
     }
