@@ -12,7 +12,8 @@
 */
 
 Route::get('/', 'PagesController@root')->name('root');
-
+// 秒杀下单
+Route::post('seckill_orders', 'OrderController@seckill')->name('seckill_orders.store');
 Auth::routes();
 
 Route::group(['middleware' => 'auth'],function (){
@@ -54,9 +55,10 @@ Route::group(['middleware' => 'auth'],function (){
         Route::get('coupon_code/{code}','CouponCodesController@show')->name('coupon_codes.show');
         // 众筹
         Route::post('crowdfunding_orders', 'OrderController@crowdfunding')->name('crowdfunding_orders.store');
-        Route::post('seckill_orders', 'OrderController@seckill')->name('seckill_orders.store');
+        
     });
 });
+
 
 Route::get('products','ProductsController@index')->name('products.index');
 Route::get('products/{product}','ProductsController@show')->name('products.show')->where('product', '[0-9]+');

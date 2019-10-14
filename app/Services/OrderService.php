@@ -15,6 +15,7 @@ use App\Models\UserAddress;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Yansongda\Supports\Log;
+use Illuminate\Support\Facades\Redis;
 
 class OrderService
 {
@@ -120,9 +121,7 @@ class OrderService
     public function seckill(User $user,array $addressData,ProductSku $sku)
     {
         $order = DB::transaction(function () use ($user,$addressData,$sku){
-            if ($sku->decreaseStock(1) <= 0){
-                throw new InvalidRequestException('该商品库存不足');
-            }
+        
             // 创建一个订单
             $order = new Order([
                 'address'      => [ // 将地址信息放入订单中
@@ -145,7 +144,7 @@ class OrderService
             $item->product()->associate($sku->product_id);
             $item->productSku()->associate($sku);
             $item->save();
-            
+            Redis::decr('seckill_sku_'.$sku->id);
             return $order;
         });
         dispatch(new CloseOrder($order,config('app.seckill_order_ttl')));

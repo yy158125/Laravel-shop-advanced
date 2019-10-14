@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class CloseOrder implements ShouldQueue
 {
@@ -42,8 +43,13 @@ class CloseOrder implements ShouldQueue
         }
         DB::transaction(function (){
             $this->order->update(['closed' => true]);
+            $type = $this->order->type;
             foreach ($this->order->items as $item){
+
                 $item->productSku->addStock($item->amount);
+                if($type === Order::TYPE_SECKILL && $item->product->on_sale && !$item->product->seckill->is_after_end){
+                    Redis::incr('seckill_sku_'.$item->productSku->id);
+                }
             }
             // 加优惠券数量
             if ($this->order->couponCode){
