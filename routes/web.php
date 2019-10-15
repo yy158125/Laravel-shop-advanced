@@ -13,7 +13,8 @@
 
 Route::get('/', 'PagesController@root')->name('root');
 // 秒杀下单
-Route::post('seckill_orders', 'OrderController@seckill')->name('seckill_orders.store');
+Route::post('seckill_orders', 'OrderController@seckill')->name('seckill_orders.store')->middleware('random_drop:80');
+
 Auth::routes();
 
 Route::group(['middleware' => 'auth'],function (){
