@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
     {
         if(app()->environment('local')){
             DB::listen(function ($query){
-                 Log::info(Str::replaceArray('?',$query->bindings,$query->sql));
+//                 Log::info(Str::replaceArray('?',$query->bindings,$query->sql));
 //                Log::info($query->sql);
             });
         }

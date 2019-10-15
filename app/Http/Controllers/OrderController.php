@@ -142,6 +142,7 @@ class OrderController extends Controller
     // 秒杀下单
     public function seckill(SeckillOrderRequest $request,OrderService $orderService)
     {
+
         $sku = ProductSku::find($request->input('sku_id'));
 
         return $orderService->seckill($request->user(),$request->input('address'),$sku);

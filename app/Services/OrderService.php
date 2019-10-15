@@ -145,11 +145,14 @@ class OrderService
             $item->product()->associate($sku->product_id);
             $item->productSku()->associate($sku);
             $item->save();
+
              // 扣减对应 SKU 库存
              if ($sku->decreaseStock(1) <= 0) {
                 throw new InvalidRequestException('该商品库存不足');
-            }
-            Redis::decr('seckill_sku_'.$sku->id);
+             }
+             Redis::decr('seckill_sku_'.$sku->id);
+
+
             return $order;
         });
         dispatch(new CloseOrder($order,config('app.seckill_order_ttl')));
@@ -175,7 +178,6 @@ class OrderService
                 break;
             case 'alipay':
                 $refundNo = Order::getAvailableRefundNo();
-                Log::info($refundNo);
                 // 调用支付宝支付实例的 refund 方法
                 $ret = app('alipay')->refund([
                     'out_trade_no' => $order->no, // 之前的订单流水号
