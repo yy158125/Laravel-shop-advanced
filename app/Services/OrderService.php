@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Exceptions\CouponCodeUnavailableException;
 use App\Exceptions\InternalException;
+use App\Exceptions\InvalidRequestException;
 use App\Jobs\CloseOrder;
 use App\Models\CouponCode;
 use App\Models\Order;

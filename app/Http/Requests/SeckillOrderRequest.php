@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 
+use App\Exceptions\InvalidRequestException;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductSku;
@@ -43,10 +44,10 @@ class SeckillOrderRequest extends Request
                     if(!$user = Auth::user()){
                         throw new AuthenticationException('请先登录');
                     }
+
                     if(!$user->email_verified){
                         throw new InvalidRequestException('请先验证邮箱');
                     }
-                    Log::info($stock);
                     $order = Order::query()
                         ->where('user_id',$this->user()->id)
                         ->whereHas('items',function ($query) use ($value){
