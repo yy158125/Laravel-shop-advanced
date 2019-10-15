@@ -35,7 +35,6 @@ class SeckillOrderRequest extends Request
                 'required',
                 function ($attribute, $value, $fail) {
                     $stock = Redis::get('seckill_sku_'.$value);
-                    dd('seckill_sku_'.$value);
                     if(is_null($stock)){
                         return $fail('该商品不存在');
                     }
