@@ -144,6 +144,10 @@ class OrderService
             $item->product()->associate($sku->product_id);
             $item->productSku()->associate($sku);
             $item->save();
+             // 扣减对应 SKU 库存
+             if ($sku->decreaseStock(1) <= 0) {
+                throw new InvalidRequestException('该商品库存不足');
+            }
             Redis::decr('seckill_sku_'.$sku->id);
             return $order;
         });

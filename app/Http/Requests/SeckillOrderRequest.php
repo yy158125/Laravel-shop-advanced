@@ -10,6 +10,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\AuthenticationException;
+use Yansongda\Supports\Log;
 
 class SeckillOrderRequest extends Request
 {
@@ -45,6 +46,7 @@ class SeckillOrderRequest extends Request
                     if(!$user->email_verified){
                         throw new InvalidRequestException('请先验证邮箱');
                     }
+                    Log::info($stock);
                     $order = Order::query()
                         ->where('user_id',$this->user()->id)
                         ->whereHas('items',function ($query) use ($value){
