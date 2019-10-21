@@ -92,4 +92,5 @@ class Product extends Model
         });
         return $arr;
     }
+
 }

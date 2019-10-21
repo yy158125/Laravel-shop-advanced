@@ -36,7 +36,6 @@ class EmailVerificationNotification extends Notification implements ShouldQueue
     {
         $token = Str::random(16);
 
-        Log::info($token);
         Cache::set('email_verification_'.$notifiable->email,$token,30);
         $url = route('email_verification.verify',['email' => $notifiable->email,'token' => $token]);
         Log::info('token: '.$token);

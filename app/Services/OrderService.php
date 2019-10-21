@@ -122,7 +122,9 @@ class OrderService
     public function seckill(User $user,array $addressData,ProductSku $sku)
     {
         $order = DB::transaction(function () use ($user,$addressData,$sku){
-        
+            if ($sku->product->seckill->is_after_end){
+                throw new InvalidRequestException('该商品秒杀已结束');
+            }
             // 创建一个订单
             $order = new Order([
                 'address'      => [ // 将地址信息放入订单中
